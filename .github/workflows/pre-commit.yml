@@ -1,0 +1,28 @@
+---
+name: pre-commit
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: set PYTHON_VERSION_ASDF
+        run: -|
+          echo "PYTHON_VERSION_ASDF=$(grep python .tool-versions \
+          cut -d ' ' -f1)" >> $GITHUB_ENV
+      - uses: actions/setup-python@v2
+        with:
+          # see: https://github.com/actions/python-versions/releases
+          python-version: ${{ env.PYTHON_VERSION_ASDF }}
+      - uses: pre-commit/action@v2.0.3
+        with:
+          extra_args: -a --show-diff-on-failure
