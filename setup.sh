@@ -40,7 +40,7 @@ detect_distribution() {
     DISTRIBUTION=ubuntu
     DISTRIBUTION_VERSION=$(cat /etc/os-release | grep UBUNTU_CODENAME= | cut -c 17-)
     log $DISTRIBUTION
-    log $DISTRIBUTION_VERSION
+    log "$DISTRIBUTION_VERSION"
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     DISTRIBUTION=debian
   elif [ -e /etc/redhat-release ]; then
