@@ -7,7 +7,7 @@ LOG_FILE="$PWD/log/$(date +'%Y-%m-%d_%H-%M-%S').log"
 main() {
   detect_os
 
-  if [ "$PLATFORM" != 'linux' -a "$PLATFORM" != 'mac' ]; then
+  if [ "$PLATFORM" != 'linux' ] && [ "$PLATFORM" != 'mac' ]; then
     abort 'このOSは対応していません'
   fi
 
