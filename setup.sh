@@ -37,9 +37,11 @@ detect_os() {
 
 detect_distribution() {
   if [ -e /etc/lsb-release ]; then
-    DISTRIBUTION=ubuntu
-    DISTRIBUTION_VERSION=$(cat /etc/os-release | grep UBUNTU_CODENAME= | cut -c 17-)
-    log $DISTRIBUTION
+    DISTRIBUTION="$(grep ^NAME= /etc/os-release)"
+    DISTRIBUTION=${DISTRIBUTION#NAME=}
+    DISTRIBUTION=${DISTRIBUTION//\"/}
+    DISTRIBUTION_VERSION=$(grep ^UBUNTU_CODENAME= /etc/os-release | cut -c 17-)
+    log "$DISTRIBUTION"
     log "$DISTRIBUTION_VERSION"
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     DISTRIBUTION=debian
