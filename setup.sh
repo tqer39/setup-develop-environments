@@ -56,9 +56,8 @@ detect_distribution() {
   elif [ -e /etc/arch-release ]; then
     DISTRIBUTION=arch
   else
-    echo "Your distributio is not supported."
     DISTRIBUTION="Unknown Distribution"
-    exit 1
+    abort "Your distributio is not supported."
   fi
 }
 
