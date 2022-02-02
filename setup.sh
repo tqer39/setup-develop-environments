@@ -77,7 +77,7 @@ check_confirm() {
 confirm() {
   while true; do
     echo -n "$* [y/n]: "
-    read ANS
+    read -r ANS
     case $ANS in
       [Yy]*)
         return 0
