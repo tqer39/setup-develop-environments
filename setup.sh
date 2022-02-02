@@ -25,9 +25,9 @@ abort() {
 detect_os() {
   if [ "$(uname)" == "Darwin" ]; then
     PLATFORM=mac
-  elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
+  elif [ "$(uname -s)" == "MINGW" ]; then
     PLATFORM=windows
-  elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+  elif [ "$(uname -s)" == "Linux" ]; then
     PLATFORM=linux
   else
     PLATFORM="Unknown OS"
