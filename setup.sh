@@ -7,10 +7,11 @@ LOG_FILE="$PWD/log/$(date +'%Y-%m-%d_%H-%M-%S').log"
 main() {
   detect_os
 
-
-  if [ "$PLATFORM" == 'linux' -a "$PLATFORM" == 'mac' ]; then
-    detect_distribution
+  if [ "$PLATFORM" != 'linux' -a "$PLATFORM" != 'mac' ]; then
+    abort 'このOSは対応していません'
   fi
+
+  detect_distribution
 
   if [ "$PLATFORM" == "linux" ]; then
     install_linux
