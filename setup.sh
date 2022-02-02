@@ -8,13 +8,13 @@ main() {
   detect_os
 
 
-  if [ "$_PLATFORM" == 'linux' -a "$_PLATFORM" == 'mac' ]; then
+  if [ "$PLATFORM" == 'linux' -a "$PLATFORM" == 'mac' ]; then
     detect_distribution
   fi
 
-  if [ "$_PLATFORM" == "linux" ]; then
+  if [ "$PLATFORM" == "linux" ]; then
     install_linux
-  elif [ "$_PLATFORM" == 'mac' ]; then
+  elif [ "$PLATFORM" == 'mac' ]; then
     # TODO: install mac
     # install_mac
   else
@@ -31,13 +31,13 @@ abort() {
 
 detect_os() {
   if [ "$(uname)" == "Darwin" ]; then
-    _PLATFORM=mac
+    PLATFORM=mac
   elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
-    _PLATFORM=windows
+    PLATFORM=windows
   elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    _PLATFORM=linux
+    PLATFORM=linux
   else
-    _PLATFORM="Unknown OS"
+    PLATFORM="Unknown OS"
     abort "Your platform ($(uname -a)) is not supported."
   fi
 }
