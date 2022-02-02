@@ -110,7 +110,7 @@ setup_brew() {
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] | $@" >> "$LOG_FILE"
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] | $1" >> "$LOG_FILE"
   log
 }
 
