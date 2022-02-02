@@ -12,15 +12,7 @@ main() {
   fi
 
   detect_distribution
-
-  if [ "$PLATFORM" == "linux" ]; then
-    install_linux
-  elif [ "$PLATFORM" == 'mac' ]; then
-    # TODO: install mac
-    # install_mac
-  else
-    abort 'このOSは対応していません'
-  fi
+  setup
 
   exit 0
 }
@@ -45,30 +37,30 @@ detect_os() {
 
 detect_distribution() {
   if [ -e /etc/lsb-release ]; then
-    _DISTRIBUTION=ubuntu
-    _DISTRIBUTION_VERSION=$(cat /etc/os-release | grep UBUNTU_CODENAME= | cut -c 17-)
-    echo $_DISTRIBUTION
-    echo $_DISTRIBUTION_VERSION
+    DISTRIBUTION=ubuntu
+    DISTRIBUTION_VERSION=$(cat /etc/os-release | grep UBUNTU_CODENAME= | cut -c 17-)
+    log $DISTRIBUTION
+    log $DISTRIBUTION_VERSION
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
-    _DISTRIBUTION=debian
+    DISTRIBUTION=debian
   elif [ -e /etc/redhat-release ]; then
     if [ -e /etc/oracle-release ]; then
-      _DISTRIBUTION=oracle
+      DISTRIBUTION=oracle
     else
-      _DISTRIBUTION=redhat
+      DISTRIBUTION=redhat
     fi
   elif [ -e /etc/fedora-release ]; then
-    _DISTRIBUTION=fedora
+    DISTRIBUTION=fedora
   elif [ -e /etc/arch-release ]; then
-    _DISTRIBUTION=arch
+    DISTRIBUTION=arch
   else
     echo "Your distributio is not supported."
-    _DISTRIBUTION="Unknown Distribution"
+    DISTRIBUTION="Unknown Distribution"
     exit 1
   fi
 }
 
-install_linux() {
+setup() {
   check_confirm "brew"
 }
 
@@ -99,10 +91,6 @@ confirm() {
     esac
   done
 }
-
-# install_mac() {
-#   # TODO: macOSの設定
-# }
 
 is_exists() {
   which "$1" >/dev/null 2>&1
