@@ -41,8 +41,8 @@ detect_distribution() {
     DISTRIBUTION=${DISTRIBUTION#NAME=}
     DISTRIBUTION=${DISTRIBUTION//\"/}
     DISTRIBUTION_VERSION=$(grep ^UBUNTU_CODENAME= /etc/os-release | cut -c 17-)
-    log "$DISTRIBUTION"
-    log "$DISTRIBUTION_VERSION"
+    log "Distribution: $DISTRIBUTION"
+    log "Distribution Version: $DISTRIBUTION_VERSION"
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     DISTRIBUTION=debian
   elif [ -e /etc/redhat-release ]; then
@@ -73,13 +73,18 @@ setup() {
 }
 
 check_confirm() {
+  if is_exists "$1"; then
+    log "$1 is already installed"
+    return
+  fi
+
   if confirm "$1 をインストールします。よろしいですか？"; then
     case $1 in
       brew ) setup_brew ;;
       asdf ) setup_asdf ;;
     esac
   else
-    echo "No"
+    log "do not install $1."
   fi
 }
 
@@ -107,21 +112,15 @@ is_exists() {
 }
 
 setup_brew() {
-  if is_exists brew; then
-    echo "brew is already installed"
-  else
-    # インストーラでプラットフォームの差分を吸収している
-    echo "brew is not installed"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  fi
+  # インストーラでプラットフォームの差分を吸収している
+  echo "brew is not installed"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 }
 
 setup_asdf() {
-  if is_exists asdf; then
-    log "asdf is already installed"
-  elif is_exists brew; then
-    log "asdf is not installed"
+  if is_exists brew; then
     brew install asdf
+    echo "brew is not installed"
   else
     setup_brew
   fi
