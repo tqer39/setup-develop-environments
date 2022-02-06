@@ -62,10 +62,13 @@ detect_distribution() {
 }
 
 setup() {
+  setup_snap
+
   SOFTWARE_LIST=(
     brew
     asdf
     terminator
+    postman
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -84,6 +87,7 @@ check_confirm() {
       brew ) setup_brew ;;
       asdf ) setup_asdf ;;
       terminator ) setup_terminator ;;
+      postman ) setup_postman ;;
     esac
   else
     log "do not install $1."
@@ -129,6 +133,21 @@ is_mac() {
   fi
 }
 
+setup_snap() {
+  if is_linux; then
+    log "setup_snap"
+
+    if [ -e /etc/apt/preferences.d/nosnap.pref ]; then
+      sudo rm /etc/apt/preferences.d/nosnap.pref
+    fi
+
+    if ! is_exists snap; then
+      sudo apt update
+      sudo apt install -y snapd
+    fi
+  fi
+}
+
 setup_brew() {
   # インストーラでプラットフォームの差分を吸収している
   echo "brew is not installed"
@@ -159,6 +178,16 @@ setup_terminator() {
     if is_exists brew; then
       brew install --build-from-source terminator
     fi
+  fi
+}
+
+setup_postman() {
+  if is_linux; then
+    sudo snap install postman
+  fi
+
+  if is_mac; then
+    brew install --cask postman
   fi
 }
 
