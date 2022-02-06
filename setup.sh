@@ -65,6 +65,7 @@ setup() {
   SOFTWARE_LIST=(
     brew
     asdf
+    terminator
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -82,6 +83,7 @@ check_confirm() {
     case $1 in
       brew ) setup_brew ;;
       asdf ) setup_asdf ;;
+      terminator ) setup_terminator ;;
     esac
   else
     log "do not install $1."
@@ -111,6 +113,22 @@ is_exists() {
   return $?
 }
 
+is_linux() {
+  if [ "$PLATFORM" == 'linux' ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+is_mac() {
+  if [ "$PLATFORM" == 'mac' ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 setup_brew() {
   # インストーラでプラットフォームの差分を吸収している
   echo "brew is not installed"
@@ -123,6 +141,18 @@ setup_asdf() {
     echo "brew is not installed"
   else
     setup_brew
+  fi
+}
+
+setup_terminator() {
+  if is_linux; then
+    if is_exists apt; then
+      sudo apt install -y terminator
+    elif is_exists yum; then
+      sudo yum install -y terminator
+    else
+      abort "Your OS is not supported."
+    fi
   fi
 }
 
