@@ -119,6 +119,14 @@ is_linux() {
   fi
 }
 
+is_mac() {
+  if [ "$PLATFORM" == 'mac' ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 setup_brew() {
   # インストーラでプラットフォームの差分を吸収している
   echo "brew is not installed"
