@@ -68,6 +68,7 @@ setup() {
     brew
     asdf
     terminator
+    postman
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -86,6 +87,7 @@ check_confirm() {
       brew ) setup_brew ;;
       asdf ) setup_asdf ;;
       terminator ) setup_terminator ;;
+      postman ) setup_postman ;;
     esac
   else
     log "do not install $1."
@@ -170,6 +172,16 @@ setup_terminator() {
     else
       abort "Your OS is not supported."
     fi
+  fi
+}
+
+setup_postman() {
+  if is_linux; then
+    sudo snap install postman
+  fi
+
+  if is_mac; then
+    brew install --cask postman
   fi
 }
 
