@@ -73,7 +73,7 @@ setup() {
 }
 
 check_confirm() {
-  if is_exists $1; then
+  if is_exists "$1"; then
     log "$1 is already installed"
     return
   fi
