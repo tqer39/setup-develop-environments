@@ -69,6 +69,7 @@ check_confirm() {
   if confirm "$1 をインストールします。よろしいですか？"; then
     case $1 in
       brew ) setup_brew ;;
+      asdf ) setup_asdf ;;
     esac
   else
     echo "No"
@@ -105,6 +106,17 @@ setup_brew() {
     # インストーラでプラットフォームの差分を吸収している
     echo "brew is not installed"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  fi
+}
+
+setup_asdf() {
+  if is_exists asdf; then
+    log "asdf is already installed"
+  elif is_exists brew; then
+    log "asdf is not installed"
+    brew install asdf
+  else
+    setup_brew
   fi
 }
 
