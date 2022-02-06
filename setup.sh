@@ -62,7 +62,14 @@ detect_distribution() {
 }
 
 setup() {
-  check_confirm "brew"
+  SOFTWARE_LIST=(
+    brew
+    asdf
+  )
+
+  for software in "${SOFTWARE_LIST[@]}"; do
+    check_confirm "$software"
+  done
 }
 
 check_confirm() {
@@ -123,6 +130,7 @@ setup_asdf() {
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
+  echo "$1"
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] | $1" >> "$LOG_FILE"
 }
 
