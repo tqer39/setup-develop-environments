@@ -69,6 +69,7 @@ setup() {
     asdf
     terminator
     postman
+    pre-commit
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -88,6 +89,7 @@ check_confirm() {
       asdf ) setup_asdf ;;
       terminator ) setup_terminator ;;
       postman ) setup_postman ;;
+      pre-commit ) setup_pre-commit ;;
     esac
   else
     log "do not install $1."
@@ -189,6 +191,10 @@ setup_postman() {
   if is_mac; then
     brew install --cask postman
   fi
+}
+
+setup_pre-commit() {
+  brew install pre-commit
 }
 
 # スクリプトのログファイルを残す関数
