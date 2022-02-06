@@ -62,6 +62,8 @@ detect_distribution() {
 }
 
 setup() {
+  setup_snap
+
   SOFTWARE_LIST=(
     brew
     asdf
@@ -126,6 +128,21 @@ is_mac() {
     return 0
   else
     return 1
+  fi
+}
+
+setup_snap() {
+  if is_linux; then
+    log "setup_snap"
+
+    if [ -e /etc/apt/preferences.d/nosnap.pref ]; then
+      sudo rm /etc/apt/preferences.d/nosnap.pref
+    fi
+
+    if ! is_exists snap; then
+      sudo apt update
+      sudo apt install -y snapd
+    fi
   fi
 }
 
