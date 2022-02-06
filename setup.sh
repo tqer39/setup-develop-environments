@@ -62,7 +62,14 @@ detect_distribution() {
 }
 
 setup() {
-  check_confirm "brew"
+  SOFTWARE_LIST=(
+    brew
+    asdf
+  )
+
+  for software in "${SOFTWARE_LIST[@]}"; do
+    check_confirm "$software"
+  done
 }
 
 check_confirm() {
