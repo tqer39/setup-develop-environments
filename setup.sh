@@ -154,6 +154,12 @@ setup_terminator() {
       abort "Your OS is not supported."
     fi
   fi
+
+  if is_mac; then
+    if is_exists brew; then
+      brew install --build-from-source terminator
+    fi
+  fi
 }
 
 # スクリプトのログファイルを残す関数
