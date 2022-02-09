@@ -70,6 +70,7 @@ setup() {
     terminator
     postman
     pre-commit
+    slack
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -90,6 +91,7 @@ check_confirm() {
       terminator ) setup_terminator ;;
       postman ) setup_postman ;;
       pre-commit ) setup_pre-commit ;;
+      slack ) setup_slack ;;
     esac
   else
     log "do not install $1."
@@ -195,6 +197,24 @@ setup_postman() {
 
 setup_pre-commit() {
   brew install pre-commit
+}
+
+setup_slack() {
+  if is_linux; then
+    if is_exists snap; then
+      sudo snap install slack --classic
+    else
+      setup_snap
+    fi
+  fi
+
+  if is_mac; then
+    if is_exists brew; then
+      brew install --cask slack
+    else
+      setup_brew
+    fi
+  fi
 }
 
 # スクリプトのログファイルを残す関数
