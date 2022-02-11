@@ -78,6 +78,7 @@ setup() {
     aws-vault
     awscli
     mysql-client
+    jq
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -109,6 +110,7 @@ check_confirm() {
       aws-vault ) setup_aws-vault ;;
       awscli ) setup_awscli ;;
       mysql-client ) setup_mysql-client ;;
+      jq ) setup_jq ;;
     esac
   else
     log "do not install $1."
@@ -284,6 +286,14 @@ setup_awscli() {
 setup_mysql-client() {
   if is_exists brew; then
     brew install mysql-client
+  else
+    setup_brew
+  fi
+}
+
+setup_jq() {
+  if is_exists brew; then
+    brew install jq
   else
     setup_brew
   fi
