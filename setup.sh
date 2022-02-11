@@ -71,6 +71,7 @@ setup() {
     postman
     pre-commit
     slack
+    bash-completion
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -82,6 +83,11 @@ check_confirm() {
   if is_exists "$1"; then
     log "$1 is already installed"
     return
+  elif is_exists brew; then
+    if [ "$(brew list | grep -c "$1")" -gt 0 ]; then
+      log "$1 is already installed"
+      return
+    fi
   fi
 
   if confirm "$1 をインストールします。よろしいですか？"; then
@@ -92,6 +98,7 @@ check_confirm() {
       postman ) setup_postman ;;
       pre-commit ) setup_pre-commit ;;
       slack ) setup_slack ;;
+      bash-completion ) setup_bash-completion ;;
     esac
   else
     log "do not install $1."
@@ -214,6 +221,14 @@ setup_slack() {
     else
       setup_brew
     fi
+  fi
+}
+
+setup_bash-completion() {
+  if is_exists brew; then
+    brew install bash-completion@2
+  else
+    setup_brew
   fi
 }
 
