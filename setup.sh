@@ -79,6 +79,7 @@ setup() {
     awscli
     mysql-client
     jq
+    session-manager-plugin
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -111,6 +112,7 @@ check_confirm() {
       awscli ) setup_awscli ;;
       mysql-client ) setup_mysql-client ;;
       jq ) setup_jq ;;
+      session-manager-plugin ) setup_session-manager-plugin ;;
     esac
   else
     log "do not install $1."
@@ -296,6 +298,17 @@ setup_jq() {
     brew install jq
   else
     setup_brew
+  fi
+}
+
+setup_session-manager-plugin() {
+  if is_ubuntu; then
+    # see: https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html
+    if [ "$(arch)" = "x86_64" ]; then
+      curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+      sudo dpkg -i session-manager-plugin.deb
+      rm -rf session-manager-plugin.deb
+    fi
   fi
 }
 
