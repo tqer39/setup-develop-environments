@@ -82,6 +82,7 @@ setup() {
     session-manager-plugin
     1password
     brew-cask-completion
+    git
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -117,6 +118,7 @@ check_confirm() {
       session-manager-plugin ) setup_session-manager-plugin ;;
       1password ) setup_1password ;;
       brew-cask-completion ) setup_brew-cask-completion ;;
+      git ) setup_git ;;
     esac
   else
     log "do not install $1."
@@ -340,6 +342,14 @@ setup_1password() {
 setup_brew-cask-completion() {
   if is_exists brew; then
     brew install brew-cask-completion
+  else
+    setup_brew
+  fi
+}
+
+setup_git() {
+  if is_exists brew; then
+    brew install git
   else
     setup_brew
   fi
