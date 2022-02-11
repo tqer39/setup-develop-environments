@@ -75,6 +75,7 @@ setup() {
     slack
     bash-completion
     im-config
+    aws-vault
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -103,6 +104,7 @@ check_confirm() {
       slack ) setup_slack ;;
       bash-completion ) setup_bash-completion ;;
       im-config ) setup_im-config ;;
+      aws-vault ) setup_aws-vault ;;
     esac
   else
     log "do not install $1."
@@ -256,6 +258,14 @@ setup_im-config() {
       mozc-utils-gui \
       im-config
     im-config -n fcitx
+  fi
+}
+
+setup_aws-vault() {
+  if is_exists brew; then
+    brew install aws-vault
+  else
+    setup_brew
   fi
 }
 
