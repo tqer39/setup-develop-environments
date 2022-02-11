@@ -3,6 +3,25 @@
 set -eu
 
 LOG_FILE="$PWD/log/$(date +'%Y-%m-%d_%H-%M-%S').log"
+SOFTWARE_LIST=(
+  brew
+  asdf
+  terminator
+  postman
+  pre-commit
+  slack
+  bash-completion
+  im-config
+  aws-vault
+  awscli
+  mysql-client
+  jq
+  session-manager-plugin
+  1password
+  brew-cask-completion
+  git
+  op
+)
 
 main() {
   detect_os
@@ -65,26 +84,6 @@ detect_distribution() {
 
 setup() {
   setup_snap
-
-  SOFTWARE_LIST=(
-    brew
-    asdf
-    terminator
-    postman
-    pre-commit
-    slack
-    bash-completion
-    im-config
-    aws-vault
-    awscli
-    mysql-client
-    jq
-    session-manager-plugin
-    1password
-    brew-cask-completion
-    git
-    op
-  )
 
   for software in "${SOFTWARE_LIST[@]}"; do
     check_confirm "$software"
@@ -391,4 +390,29 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] | $1" >> "$LOG_FILE"
 }
 
-main
+versions() {
+  for software in "${SOFTWARE_LIST[@]}"; do
+    if is_exists "$software"; then
+      case $software in
+        brew ) log "brew: $(brew -v | head -n 1)" ;;
+        asdf ) log "asdf: $(asdf --version)" ;;
+        terminator ) log "terminator: $(terminator -v)" ;;
+        # TODO: aws-vaultはログの出力形式が特殊なので改行してしまう
+        aws-vault ) V=$(aws-vault --version); log "aws-vault: $V" ;;
+        pre-commit ) log "pre-commit: $(pre-commit -V)" ;;
+        awscli ) log "awscli: $(aws --version)" ;;
+        mysql-client ) log "mysql-client: $(mysql -V)" ;;
+        jq ) log "jq: $(jq --version)" ;;
+        session-manager-plugin ) log "session-manager-plugin: $(session-manager-plugin --version)" ;;
+        git ) log "git: $(git --version)" ;;
+        op ) log "1password-cli: $(op --version)" ;;
+      esac
+    fi
+  done
+}
+
+if [ "$1" == "versions" ]; then
+  versions
+else
+  main
+fi
