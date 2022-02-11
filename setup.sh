@@ -77,6 +77,7 @@ setup() {
     im-config
     aws-vault
     awscli
+    mysql-client
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -107,6 +108,7 @@ check_confirm() {
       im-config ) setup_im-config ;;
       aws-vault ) setup_aws-vault ;;
       awscli ) setup_awscli ;;
+      mysql-client ) setup_mysql-client ;;
     esac
   else
     log "do not install $1."
@@ -274,6 +276,14 @@ setup_aws-vault() {
 setup_awscli() {
   if is_exists brew; then
     brew install awscli
+  else
+    setup_brew
+  fi
+}
+
+setup_mysql-client() {
+  if is_exists brew; then
+    brew install mysql-client
   else
     setup_brew
   fi
