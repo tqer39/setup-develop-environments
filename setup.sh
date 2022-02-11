@@ -81,6 +81,7 @@ setup() {
     jq
     session-manager-plugin
     1password
+    brew-cask-completion
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -115,6 +116,7 @@ check_confirm() {
       jq ) setup_jq ;;
       session-manager-plugin ) setup_session-manager-plugin ;;
       1password ) setup_1password ;;
+      brew-cask-completion ) setup_brew-cask-completion ;;
     esac
   else
     log "do not install $1."
@@ -332,6 +334,14 @@ setup_1password() {
     else
       setup_brew
     fi
+  fi
+}
+
+setup_brew-cask-completion() {
+  if is_exists brew; then
+    brew install brew-cask-completion
+  else
+    setup_brew
   fi
 }
 
