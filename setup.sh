@@ -21,6 +21,7 @@ SOFTWARE_LIST=(
   brew-cask-completion
   git
   op
+  newman
 )
 
 main() {
@@ -120,6 +121,7 @@ check_confirm() {
       brew-cask-completion ) setup_brew-cask-completion ;;
       git ) setup_git ;;
       op ) setup_1password-cli ;;
+      newman ) setup_newman ;;
     esac
   else
     log "do not install $1."
@@ -383,6 +385,14 @@ setup_1password-cli() {
   fi
 }
 
+setup_newman() {
+  if is_exists brew; then
+    brew install newman
+  else
+    setup_brew
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -406,6 +416,7 @@ versions() {
         session-manager-plugin ) log "session-manager-plugin: $(session-manager-plugin --version)" ;;
         git ) log "git: $(git --version)" ;;
         op ) log "1password-cli: $(op --version)" ;;
+        newman ) log "newman: $(newman -v)" ;;
       esac
     fi
   done
