@@ -41,6 +41,8 @@ detect_distribution() {
     DISTRIBUTION=${DISTRIBUTION#NAME=}
     DISTRIBUTION=${DISTRIBUTION//\"/}
     DISTRIBUTION_VERSION=$(grep ^UBUNTU_CODENAME= /etc/os-release | cut -c 17-)
+    DISTRIBUTION_ID_LIKE="$(grep ^ID_LIKE= /etc/os-release)"
+    DISTRIBUTION_ID_LIKE=${DISTRIBUTION_ID_LIKE#ID_LIKE=}
     log "Distribution: $DISTRIBUTION"
     log "Distribution Version: $DISTRIBUTION_VERSION"
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
@@ -72,6 +74,7 @@ setup() {
     pre-commit
     slack
     bash-completion
+    im-config
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -99,6 +102,7 @@ check_confirm() {
       pre-commit ) setup_pre-commit ;;
       slack ) setup_slack ;;
       bash-completion ) setup_bash-completion ;;
+      im-config ) setup_im-config ;;
     esac
   else
     log "do not install $1."
@@ -130,6 +134,14 @@ is_exists() {
 
 is_linux() {
   if [ "$PLATFORM" == 'linux' ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+is_ubuntu() {
+  if [ "$DISTRIBUTION_ID_LIKE" = "ubuntu" ]; then
     return 0
   else
     return 1
@@ -229,6 +241,21 @@ setup_bash-completion() {
     brew install bash-completion@2
   else
     setup_brew
+  fi
+}
+
+setup_im-config() {
+  if is_linux && is_ubuntu; then
+    echo 1111
+    sudo apt update
+    sudo apt-get install -y fcitx
+    sudo apt-get install -y fcitx-frontend-gtk2 \
+      fcitx-frontend-gtk3 \
+      fcitx-ui-classic \
+      fcitx-config-gtk \
+      mozc-utils-gui \
+      im-config
+    im-config -n fcitx
   fi
 }
 
