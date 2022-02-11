@@ -76,6 +76,7 @@ setup() {
     bash-completion
     im-config
     aws-vault
+    awscli
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -105,6 +106,7 @@ check_confirm() {
       bash-completion ) setup_bash-completion ;;
       im-config ) setup_im-config ;;
       aws-vault ) setup_aws-vault ;;
+      awscli ) setup_awscli ;;
     esac
   else
     log "do not install $1."
@@ -264,6 +266,14 @@ setup_im-config() {
 setup_aws-vault() {
   if is_exists brew; then
     brew install aws-vault
+  else
+    setup_brew
+  fi
+}
+
+setup_awscli() {
+  if is_exists brew; then
+    brew install awscli
   else
     setup_brew
   fi
