@@ -83,6 +83,7 @@ setup() {
     1password
     brew-cask-completion
     git
+    op
   )
 
   for software in "${SOFTWARE_LIST[@]}"; do
@@ -119,6 +120,7 @@ check_confirm() {
       1password ) setup_1password ;;
       brew-cask-completion ) setup_brew-cask-completion ;;
       git ) setup_git ;;
+      op ) setup_1password-cli ;;
     esac
   else
     log "do not install $1."
@@ -352,6 +354,33 @@ setup_git() {
     brew install git
   else
     setup_brew
+  fi
+}
+
+setup_1password-cli() {
+  if is_linux; then
+    if is_ubuntu; then
+      _1PASSWORD_CLI_VERSION=1.12.4
+      if [ "$(arch)" = "x86_64" ]; then
+        CPU=amd64
+      fi
+      FILE_NAME="op_linux_${CPU}_v${_1PASSWORD_CLI_VERSION}.zip"
+      mkdir -p ./tmp
+      curl "https://cache.agilebits.com/dist/1P/op/pkg/v${_1PASSWORD_CLI_VERSION}/$FILE_NAME" -o "./tmp/$FILE_NAME"
+      unzip "./tmp/op_linux_${CPU}_v${_1PASSWORD_CLI_VERSION}.zip" -d ./tmp
+      gpg --receive-keys 3FEF9748469ADBE15DA7CA80AC2D62742012EA22
+      gpg --verify op.sig op
+      sudo mv ./tmp/op ./tmp/op.sig /usr/local/bin/.
+      rm -rf ./tmp/"$FILE_NAME"
+    fi
+  fi
+
+  if is_mac; then
+    if is_exists brew; then
+      brew install --cask 1password-cli
+    else
+      setup_brew
+    fi
   fi
 }
 
