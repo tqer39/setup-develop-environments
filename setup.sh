@@ -22,6 +22,7 @@ SOFTWARE_LIST=(
   git
   op
   newman
+  docker
 )
 
 main() {
@@ -60,11 +61,20 @@ detect_distribution() {
     DISTRIBUTION="$(grep ^NAME= /etc/os-release)"
     DISTRIBUTION=${DISTRIBUTION#NAME=}
     DISTRIBUTION=${DISTRIBUTION//\"/}
-    DISTRIBUTION_VERSION=$(grep ^UBUNTU_CODENAME= /etc/os-release | cut -c 17-)
+    log "DISTRIBUTION: $DISTRIBUTION"
+
+    DISTRIBUTION_VERSION_ID="$(grep ^VERSION_ID= /etc/os-release)"
+    DISTRIBUTION_VERSION_ID=${DISTRIBUTION_VERSION_ID#VERSION_ID=}
+    DISTRIBUTION_VERSION_ID=${DISTRIBUTION_VERSION_ID//\"/}
+    log "DISTRIBUTION_VERSION_ID: $DISTRIBUTION_VERSION_ID"
+
     DISTRIBUTION_ID_LIKE="$(grep ^ID_LIKE= /etc/os-release)"
     DISTRIBUTION_ID_LIKE=${DISTRIBUTION_ID_LIKE#ID_LIKE=}
-    log "Distribution: $DISTRIBUTION"
-    log "Distribution Version: $DISTRIBUTION_VERSION"
+    log "DISTRIBUTION_ID_LIKE: $DISTRIBUTION_ID_LIKE"
+
+    UBUNTU_CODENAME="$(grep ^UBUNTU_CODENAME= /etc/os-release)"
+    UBUNTU_CODENAME=${UBUNTU_CODENAME#UBUNTU_CODENAME=}
+    log "UBUNTU_CODENAME: $UBUNTU_CODENAME"
   elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     DISTRIBUTION=debian
   elif [ -e /etc/redhat-release ]; then
@@ -122,6 +132,7 @@ check_confirm() {
       git ) setup_git ;;
       op ) setup_1password-cli ;;
       newman ) setup_newman ;;
+      docker ) setup_docker ;;
     esac
   else
     log "do not install $1."
@@ -169,6 +180,14 @@ is_ubuntu() {
 
 is_mac() {
   if [ "$PLATFORM" == 'mac' ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+is_linux_mint() {
+  if [ "$DISTRIBUTION" == "Linux Mint" ]; then
     return 0
   else
     return 1
@@ -393,6 +412,47 @@ setup_newman() {
   fi
 }
 
+setup_docker() {
+  if is_linux; then
+    if is_ubuntu; then
+      sudo apt update
+      sudo apt install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg-agent \
+        software-properties-common
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      sudo apt-key fingerprint 0EBFCD88
+      CPU=amd64
+      if [ "$(arch)" = "x86_64" ]; then
+        CPU=amd64
+      fi
+      if [ ! -e /etc/apt/sources.list.d/docker-ce.list ]; then
+        sudo add-apt-repository \
+          "deb [arch=${CPU}] https://download.docker.com/linux/ubuntu $UBUNTU_CODENAME stable"
+      fi
+      sudo apt update
+      sudo apt install -y docker-ce docker-ce-cli containerd.io
+      sudo gpasswd -a "$USER" docker
+      sudo usermod -aG docker "$USER"
+      sudo cat /etc/group | grep docker
+      sudo systemctl enable docker
+      sudo systemctl restart docker
+      sudo systemctl daemon-reload
+      sudo systemctl status docker
+    fi
+  fi
+
+  if is_mac; then
+    if is_exists brew; then
+      brew install --cask docker
+    else
+      setup_brew
+    fi
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -417,6 +477,7 @@ versions() {
         git ) log "git: $(git --version)" ;;
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
+        docker ) log "docker: $(docker -v)" ;;
       esac
     fi
   done
