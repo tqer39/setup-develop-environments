@@ -23,6 +23,7 @@ SOFTWARE_LIST=(
   op
   newman
   docker
+  google-chrome
 )
 
 main() {
@@ -133,6 +134,7 @@ check_confirm() {
       op ) setup_1password-cli ;;
       newman ) setup_newman ;;
       docker ) setup_docker ;;
+      google-chrome ) setup_google-chrome ;;
     esac
   else
     log "do not install $1."
@@ -447,6 +449,31 @@ setup_docker() {
   if is_mac; then
     if is_exists brew; then
       brew install --cask docker
+    else
+      setup_brew
+    fi
+  fi
+}
+
+setup_google-chrome() {
+  if is_linux; then
+    if is_ubuntu; then
+      CPU=amd64
+      if [ "$(arch)" = "x86_64" ]; then
+        CPU=amd64
+      fi
+      sudo add-apt-repository -y \
+        "deb [arch=${CPU}] http://dl.google.com/linux/chrome/deb/ stable main"
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      sudo apt update
+      sudo apt install -y google-chrome-stable
+      sudo rm -rf /etc/apt/sources.list.d/google-chrome.list
+    fi
+  fi
+
+  if is_mac; then
+    if is_exists brew; then
+      brew install --cask google-chrome
     else
       setup_brew
     fi
