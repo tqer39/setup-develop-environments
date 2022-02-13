@@ -530,7 +530,9 @@ versions() {
         git ) log "git: $(git --version)" ;;
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
-        docker ) log "docker: $(docker -v)" ;;
+        docker )
+          log "docker: $(docker -v)"
+          log "docker-compose: $(docker compose version)" ;;
         java ) log "openjdk(java): $(java -version)" ;;
       esac
     fi
