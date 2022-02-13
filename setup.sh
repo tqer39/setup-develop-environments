@@ -25,7 +25,6 @@ SOFTWARE_LIST=(
   docker
   google-chrome
   java
-  docker-compose
 )
 
 main() {
@@ -138,7 +137,6 @@ check_confirm() {
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
       java ) setup_openjdk ;;
-      docker-compose ) setup_docker-compose ;;
     esac
   else
     log "do not install $1."
@@ -457,6 +455,9 @@ setup_docker() {
       setup_brew
     fi
   fi
+
+  # docker-composeはdockerに同梱されたので一緒にインストールする
+  setup_docker-compose
 }
 
 setup_google-chrome() {
@@ -519,7 +520,9 @@ versions() {
         asdf ) log "asdf: $(asdf --version)" ;;
         terminator ) log "terminator: $(terminator -v)" ;;
         # TODO: aws-vaultはログの出力形式が特殊なので改行してしまう
-        aws-vault ) V=$(aws-vault --version); log "aws-vault: $V" ;;
+        aws-vault )
+          log "aws-vault: "
+          aws-vault --version ;;
         pre-commit ) log "pre-commit: $(pre-commit -V)" ;;
         awscli ) log "awscli: $(aws --version)" ;;
         mysql-client ) log "mysql-client: $(mysql -V)" ;;
@@ -528,8 +531,12 @@ versions() {
         git ) log "git: $(git --version)" ;;
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
-        docker ) log "docker: $(docker -v)" ;;
-        java ) log "openjdk(java): $(java -version)" ;;
+        docker )
+          log "docker: $(docker -v)"
+          log "docker-compose: $(docker compose version)" ;;
+        java )
+          log "openjdk(java): "
+          java -version ;;
       esac
     fi
   done
