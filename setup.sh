@@ -497,9 +497,9 @@ setup_docker-compose() {
   if is_linux; then
     if is_ubuntu; then
       DOCKER_COMPOSE_VERSION=2.2.3
-      sudo rm -rf /usr/local/bin/docker-compose
-      sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      sudo chmod +x /usr/local/bin/docker-compose
+      mkdir -p ~/.docker/cli-plugins/
+      curl -SL "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-$(arch)" -o ~/.docker/cli-plugins/docker-compose
+      chmod +x ~/.docker/cli-plugins/docker-compose
     fi
   fi
 }
@@ -530,7 +530,6 @@ versions() {
         newman ) log "newman: $(newman -v)" ;;
         docker ) log "docker: $(docker -v)" ;;
         java ) log "openjdk(java): $(java -version)" ;;
-        docker-compose ) log "docker-compose: $(docker-compose -v)" ;;
       esac
     fi
   done
