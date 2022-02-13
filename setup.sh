@@ -25,7 +25,6 @@ SOFTWARE_LIST=(
   docker
   google-chrome
   java
-  docker-compose
 )
 
 main() {
@@ -457,6 +456,9 @@ setup_docker() {
       setup_brew
     fi
   fi
+
+  # docker-composeはdockerに同梱されたので一緒にインストールする
+  setup_docker-compose
 }
 
 setup_google-chrome() {
