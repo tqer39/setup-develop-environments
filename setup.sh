@@ -24,6 +24,7 @@ SOFTWARE_LIST=(
   newman
   docker
   google-chrome
+  java
 )
 
 main() {
@@ -135,6 +136,7 @@ check_confirm() {
       newman ) setup_newman ;;
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
+      java ) setup_openjdk ;;
     esac
   else
     log "do not install $1."
@@ -480,6 +482,14 @@ setup_google-chrome() {
   fi
 }
 
+setup_openjdk() {
+  if is_exists brew; then
+    brew install openjdk@11
+  else
+    setup_brew
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -505,6 +515,7 @@ versions() {
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
         docker ) log "docker: $(docker -v)" ;;
+        java ) log "openjdk(java): $(java -version)" ;;
       esac
     fi
   done
