@@ -24,6 +24,7 @@ SOFTWARE_LIST=(
   newman
   docker
   google-chrome
+  java
   docker-compose
 )
 
@@ -136,6 +137,7 @@ check_confirm() {
       newman ) setup_newman ;;
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
+      java ) setup_openjdk ;;
       docker-compose ) setup_docker-compose ;;
     esac
   else
@@ -482,6 +484,14 @@ setup_google-chrome() {
   fi
 }
 
+setup_openjdk() {
+  if is_exists brew; then
+    brew install openjdk@11
+  else
+    setup_brew
+  fi
+}
+
 # see: https://github.com/docker/compose/releases
 setup_docker-compose() {
   if is_linux; then
@@ -519,6 +529,7 @@ versions() {
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
         docker ) log "docker: $(docker -v)" ;;
+        java ) log "openjdk(java): $(java -version)" ;;
         docker-compose ) log "docker-compose: $(docker-compose -v)" ;;
       esac
     fi
