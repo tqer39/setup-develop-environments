@@ -24,6 +24,7 @@ SOFTWARE_LIST=(
   newman
   docker
   google-chrome
+  docker-compose
 )
 
 main() {
@@ -135,6 +136,7 @@ check_confirm() {
       newman ) setup_newman ;;
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
+      docker-compose ) setup_docker-compose ;;
     esac
   else
     log "do not install $1."
@@ -480,6 +482,18 @@ setup_google-chrome() {
   fi
 }
 
+# see: https://github.com/docker/compose/releases
+setup_docker-compose() {
+  if is_linux; then
+    if is_ubuntu; then
+      DOCKER_COMPOSE_VERSION=2.2.3
+      sudo rm -rf /usr/local/bin/docker-compose
+      sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      sudo chmod +x /usr/local/bin/docker-compose
+    fi
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -505,13 +519,14 @@ versions() {
         op ) log "1password-cli: $(op --version)" ;;
         newman ) log "newman: $(newman -v)" ;;
         docker ) log "docker: $(docker -v)" ;;
+        docker-compose ) log "docker-compose: $(docker-compose -v)" ;;
       esac
     fi
   done
 }
 
-if [ "$1" == "versions" ]; then
-  versions
-else
+if [ "$#" == 0 ]; then
   main
+elif [ "$1" == "versions" ]; then
+  versions
 fi
