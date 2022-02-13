@@ -25,6 +25,7 @@ SOFTWARE_LIST=(
   docker
   google-chrome
   java
+  docker-compose
 )
 
 main() {
@@ -137,6 +138,7 @@ check_confirm() {
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
       java ) setup_openjdk ;;
+      docker-compose ) setup_docker-compose ;;
     esac
   else
     log "do not install $1."
@@ -490,6 +492,18 @@ setup_openjdk() {
   fi
 }
 
+# see: https://github.com/docker/compose/releases
+setup_docker-compose() {
+  if is_linux; then
+    if is_ubuntu; then
+      DOCKER_COMPOSE_VERSION=2.2.3
+      sudo rm -rf /usr/local/bin/docker-compose
+      sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      sudo chmod +x /usr/local/bin/docker-compose
+    fi
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -516,13 +530,14 @@ versions() {
         newman ) log "newman: $(newman -v)" ;;
         docker ) log "docker: $(docker -v)" ;;
         java ) log "openjdk(java): $(java -version)" ;;
+        docker-compose ) log "docker-compose: $(docker-compose -v)" ;;
       esac
     fi
   done
 }
 
-if [ "$1" == "versions" ]; then
-  versions
-else
+if [ "$#" == 0 ]; then
   main
+elif [ "$1" == "versions" ]; then
+  versions
 fi
