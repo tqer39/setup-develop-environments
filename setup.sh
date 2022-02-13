@@ -137,7 +137,6 @@ check_confirm() {
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
       java ) setup_openjdk ;;
-      docker-compose ) setup_docker-compose ;;
     esac
   else
     log "do not install $1."
@@ -521,7 +520,9 @@ versions() {
         asdf ) log "asdf: $(asdf --version)" ;;
         terminator ) log "terminator: $(terminator -v)" ;;
         # TODO: aws-vaultはログの出力形式が特殊なので改行してしまう
-        aws-vault ) V=$(aws-vault --version); log "aws-vault: $V" ;;
+        aws-vault )
+          log "aws-vault: "
+          aws-vault --version ;;
         pre-commit ) log "pre-commit: $(pre-commit -V)" ;;
         awscli ) log "awscli: $(aws --version)" ;;
         mysql-client ) log "mysql-client: $(mysql -V)" ;;
