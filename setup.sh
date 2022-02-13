@@ -533,7 +533,9 @@ versions() {
         docker )
           log "docker: $(docker -v)"
           log "docker-compose: $(docker compose version)" ;;
-        java ) log "openjdk(java): $(java -version)" ;;
+        java )
+          log "openjdk(java): "
+          java -version ;;
       esac
     fi
   done
