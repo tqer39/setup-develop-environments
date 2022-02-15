@@ -25,6 +25,7 @@ SOFTWARE_LIST=(
   docker
   google-chrome
   java
+  gh
 )
 
 main() {
@@ -108,7 +109,7 @@ check_confirm() {
     log "$1 is already installed"
     return
   elif is_exists brew; then
-    if [ "$(brew list | grep -c "$1")" -gt 0 ]; then
+    if [ "$(brew list | grep -c "^$1@*.*$")" -gt 0 ]; then
       log "$1 is already installed"
       return
     fi
@@ -137,6 +138,7 @@ check_confirm() {
       docker ) setup_docker ;;
       google-chrome ) setup_google-chrome ;;
       java ) setup_openjdk ;;
+      gh ) setup_gh ;;
     esac
   else
     log "do not install $1."
@@ -505,6 +507,14 @@ setup_docker-compose() {
   fi
 }
 
+setup_gh() {
+  if is_exists brew; then
+    brew install gh
+  else
+    setup_brew
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -537,6 +547,7 @@ versions() {
         java )
           log "openjdk(java): "
           java -version ;;
+        gh ) log "gh: $(gh version | head -n 1)" ;;
       esac
     fi
   done
