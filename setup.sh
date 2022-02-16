@@ -26,6 +26,7 @@ SOFTWARE_LIST=(
   google-chrome
   java
   gh
+  eb
 )
 
 main() {
@@ -139,6 +140,7 @@ check_confirm() {
       google-chrome ) setup_google-chrome ;;
       java ) setup_openjdk ;;
       gh ) setup_gh ;;
+      eb ) setup_awsebcli ;;
     esac
   else
     log "do not install $1."
@@ -515,6 +517,14 @@ setup_gh() {
   fi
 }
 
+setup_awsebcli() {
+  if is_exists brew; then
+    brew install awsebcli
+  else
+    setup_brew
+  fi
+}
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -548,6 +558,7 @@ versions() {
           log "openjdk(java): "
           java -version ;;
         gh ) log "gh: $(gh version | head -n 1)" ;;
+        eb ) log "awsebcli: $(eb --version | head -n 1)" ;;
       esac
     fi
   done
