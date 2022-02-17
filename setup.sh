@@ -27,6 +27,7 @@ SOFTWARE_LIST=(
   java
   gh
   eb
+  fish
 )
 
 main() {
@@ -141,6 +142,7 @@ check_confirm() {
       java ) setup_openjdk ;;
       gh ) setup_gh ;;
       eb ) setup_awsebcli ;;
+      fish ) setup_fish ;;
     esac
   else
     log "do not install $1."
@@ -525,6 +527,15 @@ setup_awsebcli() {
   fi
 }
 
+setup_fish() {
+  if is_exists brew; then
+    brew install fish
+  else
+    setup_brew
+  fi
+}
+
+
 # スクリプトのログファイルを残す関数
 log() {
   mkdir -p "$PWD/log"
@@ -559,6 +570,7 @@ versions() {
           java -version ;;
         gh ) log "gh: $(gh version | head -n 1)" ;;
         eb ) log "awsebcli: $(eb --version | head -n 1)" ;;
+        fish ) log "fish: $(fish -v)" ;;
       esac
     fi
   done
