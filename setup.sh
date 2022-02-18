@@ -28,6 +28,12 @@ SOFTWARE_LIST=(
   gh
   eb
   fish
+  fisher
+  fzf
+  z
+  omf
+  bd
+  bass
 )
 
 main() {
@@ -106,15 +112,30 @@ setup() {
   done
 }
 
+# only install if not installed
 check_confirm() {
+  INSTALLED=false
+
+  # fish shell: plugins
+  case $1 in
+    fisher ) [ -e "$HOME/.config/fish/functions/fisher.fish" ] && INSTALLED=true ;;
+    z      ) [ -e "$HOME/.config/fish/conf.d/z.fish" ]         && INSTALLED=true ;;
+    omf    ) [ -e "$HOME/.config/fish/conf.d/omf.fish" ]       && INSTALLED=true ;;
+    bd     ) [ -e "$HOME/.config/fish/functions/bd.fish" ]     && INSTALLED=true ;;
+    bass   ) [ -e "$HOME/.config/fish/functions/bass.fish" ]   && INSTALLED=true ;;
+  esac
+
   if is_exists "$1"; then
-    log "$1 is already installed"
-    return
+      INSTALLED=true
   elif is_exists brew; then
     if [ "$(brew list | grep -c "^$1@*.*$")" -gt 0 ]; then
-      log "$1 is already installed"
-      return
+      INSTALLED=true
     fi
+  fi
+
+  if "${INSTALLED}"; then
+    log "$1 is already installed"
+    return
   fi
 
   if confirm "$1 をインストールします。よろしいですか？"; then
@@ -143,6 +164,12 @@ check_confirm() {
       gh ) setup_gh ;;
       eb ) setup_awsebcli ;;
       fish ) setup_fish ;;
+      fisher ) setup_fisher ;;
+      fzf ) setup_fzf ;;
+      z ) setup_z ;;
+      omf ) setup_omf ;;
+      bd ) setup_bd ;;
+      bass ) setup_bass ;;
     esac
   else
     log "do not install $1."
@@ -535,6 +562,72 @@ setup_fish() {
   fi
 }
 
+setup_fisher() {
+  if [ ! -e "$HOME/.config/fish/functions/fisher.fish" ]; then
+    curl https://git.io/fisher --create-dirs -sLo "$HOME/.config/fish/functions/fisher.fish"
+  fi
+}
+
+setup_fzf() {
+  if is_exists brew; then
+    brew install fzf
+    if is_exists fish; then
+      if [ "$(fish -c "fisher ls jethrokuan/fzf" | grep -c "^jethrokuan/fzf$")" = 0 ]; then
+        fish -c "fisher install jethrokuan/fzf"
+        "$HOME/.fzf/install" --all
+      fi
+    else
+      setup_fish
+    fi
+  else
+    setup_brew
+  fi
+}
+
+setup_z() {
+  if is_exists brew; then
+    brew install z
+    if is_exists fish; then
+      if [ "$(fish -c "fisher ls jethrokuan/z" | grep -c "^jethrokuan/z$")" = 0 ]; then
+        fish -c "fisher install jethrokuan/z"
+      fi
+    else
+      setup_fish
+    fi
+  else
+    setup_brew
+  fi
+}
+
+setup_omf() {
+  if is_exists fish; then
+    if [ "$(fish -c "fisher ls oh-my-fish/theme-bobthefish" | grep -c "^oh-my-fish/theme-bobthefish$")" = 0 ]; then
+      fish -c "fisher install oh-my-fish/theme-bobthefish"
+    fi
+  else
+    setup_fish
+  fi
+}
+
+setup_bd() {
+  if is_exists fish; then
+    if [ "$(fish -c "fisher ls 0rax/fish-bd" | grep -c "^0rax/fish-bd$")" = 0 ]; then
+      fish -c "fisher install 0rax/fish-bd"
+    fi
+  else
+    setup_fish
+  fi
+}
+
+setup_bass() {
+  if is_exists fish; then
+    if [ "$(fish -c "fisher ls edc/bass" | grep -c "^edc/bass$")" = 0 ]; then
+      fish -c "fisher install edc/bass"
+    fi
+  else
+    setup_fish
+  fi
+}
 
 # スクリプトのログファイルを残す関数
 log() {
@@ -571,6 +664,8 @@ versions() {
         gh ) log "gh: $(gh version | head -n 1)" ;;
         eb ) log "awsebcli: $(eb --version | head -n 1)" ;;
         fish ) log "fish: $(fish -v)" ;;
+        fisher ) log "fisher: $(fisher -v)" ;;
+        fzf ) log "fzf: $(fzf --version)" ;;
       esac
     fi
   done
