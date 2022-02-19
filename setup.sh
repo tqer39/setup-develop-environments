@@ -41,7 +41,7 @@ SOFTWARE_LIST=(
 main() {
   detect_os
 
-  if [ "$PLATFORM" != 'linux' ] && [ "$PLATFORM" != 'mac' ]; then
+  if [ ! is_linux ] && [ ! is_mac ]; then
     abort 'このOSは対応していません'
   fi
 
