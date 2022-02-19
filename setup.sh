@@ -581,7 +581,8 @@ setup_fzf() {
       if [ "$(fish -c "fisher ls jethrokuan/fzf" | grep -c "^jethrokuan/fzf$")" = 0 ]; then
         brew install fzf
         fish -c "fisher install jethrokuan/fzf"
-        "$HOME/.fzf/install" --all
+        # MEMO: 各種 shell の設定ファイルに追記するスクリプト。bash,zsh,fishすべて設定済なので処理不要
+        # "$HOME/.fzf/install" --all
       fi
     else
       setup_fish
