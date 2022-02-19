@@ -35,6 +35,7 @@ SOFTWARE_LIST=(
   bd
   bass
   bat
+  fd
 )
 
 main() {
@@ -172,6 +173,7 @@ check_confirm() {
       bd ) setup_bd ;;
       bass ) setup_bass ;;
       bat ) setup_bat ;;
+      fd ) setup_fd ;;
     esac
   else
     log "do not install $1."
@@ -634,6 +636,14 @@ setup_bass() {
 setup_bat() {
   if is_exists brew; then
     brew install bat
+  else
+    setup_brew
+  fi
+}
+
+setup_fd() {
+  if is_exists brew; then
+    brew install fd
   else
     setup_brew
   fi
