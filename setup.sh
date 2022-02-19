@@ -577,9 +577,9 @@ setup_fisher() {
 
 setup_fzf() {
   if is_exists brew; then
-    brew install fzf
     if is_exists fish; then
       if [ "$(fish -c "fisher ls jethrokuan/fzf" | grep -c "^jethrokuan/fzf$")" = 0 ]; then
+        brew install fzf
         fish -c "fisher install jethrokuan/fzf"
         "$HOME/.fzf/install" --all
       fi
