@@ -41,11 +41,14 @@ SOFTWARE_LIST=(
 main() {
   detect_os
 
-  if [ "$PLATFORM" != 'linux' ] && [ "$PLATFORM" != 'mac' ]; then
+  if [ ! is_linux ] && [ ! is_mac ]; then
     abort 'このOSは対応していません'
   fi
 
-  detect_distribution
+  if is_linux; then
+    detect_distribution
+  fi
+
   setup
 
   exit 0
@@ -574,11 +577,12 @@ setup_fisher() {
 
 setup_fzf() {
   if is_exists brew; then
-    brew install fzf
     if is_exists fish; then
       if [ "$(fish -c "fisher ls jethrokuan/fzf" | grep -c "^jethrokuan/fzf$")" = 0 ]; then
+        brew install fzf
         fish -c "fisher install jethrokuan/fzf"
-        "$HOME/.fzf/install" --all
+        # MEMO: 各種 shell の設定ファイルに追記するスクリプト。bash,zsh,fishすべて設定済なので処理不要
+        # "$HOME/.fzf/install" --all
       fi
     else
       setup_fish
