@@ -45,7 +45,10 @@ main() {
     abort 'このOSは対応していません'
   fi
 
-  detect_distribution
+  if [ "$PLATFORM" = 'linux' ]; then
+    detect_distribution
+  fi
+
   setup
 
   exit 0
