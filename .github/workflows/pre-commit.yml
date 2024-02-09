@@ -23,6 +23,6 @@ jobs:
         with:
           # see: https://github.com/actions/python-versions/releases
           python-version: ${{ env.PYTHON_VERSION_ASDF }}
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
         with:
           extra_args: -a --show-diff-on-failure
