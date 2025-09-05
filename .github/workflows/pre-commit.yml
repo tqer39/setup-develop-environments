@@ -19,7 +19,7 @@ jobs:
         run: -|
           echo "PYTHON_VERSION_ASDF=$(grep python .tool-versions \
           cut -d ' ' -f1)" >> $GITHUB_ENV
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           # see: https://github.com/actions/python-versions/releases
           python-version: ${{ env.PYTHON_VERSION_ASDF }}
